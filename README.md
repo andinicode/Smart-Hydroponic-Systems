@@ -64,15 +64,15 @@ Full system simulation was conducted over 4 minutes, where 1 minute represents 1
 
 ## Project Structure
 
+```
 Smart-Hydroponic-Systems/
-├── NTP-Detection/ # Stage 1 — NTP time synchronization
-├── Read-ADC/ # Stage 2 — ADC sensor reading
-├── PPM-Calibration/ # Stage 3 — TDS polynomial calibration (0, 500, 718 PPM)
-├── Peristaltik-Test/ # Stage 4 — Peristaltic pump testing
-├── Waterflow-Test/ # Stage 5 — Water flow sensor testing
-├── Blynk-Test/ # Stage 6 — Blynk dashboard testing
-└── Final-Code/ # Stage 7 — Full system integration and simulation
-
+├── NTP-Detection/       # Stage 1 — NTP time synchronization
+├── Read-ADC/            # Stage 2 — ADC sensor reading
+├── PPM-Calibration/     # Stage 3 — TDS polynomial calibration (0, 500, 718 PPM)
+├── Peristaltik-Test/    # Stage 4 — Peristaltic pump testing
+├── Waterflow-Test/      # Stage 5 — Water flow sensor testing
+├── Blynk-Test/          # Stage 6 — Blynk dashboard testing
+└── Final-Code/          # Stage 7 — Full system integration and simulation
 ```
 
 ## Getting Started
@@ -86,24 +86,25 @@ Smart-Hydroponic-Systems/
 **Steps**
 
 1. Clone this repository
+
+```
+git clone https://github.com/andinicode/Smart-Hydroponic-Systems.git
 ```
 
-git clone https://github.com/andinicode/Smart-Hydroponic-Systems.git
-
-````
 2. Open the `Final-Code/` folder in Arduino IDE
 3. Fill in your WiFi credentials and Blynk Auth Token
+
 ```cpp
 char ssid[] = "YOUR_WIFI_SSID";
 char pass[] = "YOUR_WIFI_PASSWORD";
 char auth[] = "YOUR_BLYNK_AUTH_TOKEN";
-````
+```
 
 4. Upload the code to your ESP32
 5. Open Blynk dashboard to monitor the system
 
 ## Author
 
-**Andini Aisyah Herdiani**  
-Fresh Graduate Electrical Engineering — Universitas Garut  
+**Andini Aisyah Herdiani**
+Fresh Graduate Electrical Engineering — Universitas Garut
 [LinkedIn](https://www.linkedin.com/in/andiniaisyahherdiani) | andiniaisyah663@gmail.com
