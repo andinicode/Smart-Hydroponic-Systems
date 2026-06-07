@@ -9,7 +9,6 @@ int count = 0;
 float adcSum = 0;
 float voltSum = 0;
 
-// Untuk median average filter
 int buffer_arr[10], temp;
 
 float getFilteredADC(int pin) {
@@ -18,7 +17,6 @@ float getFilteredADC(int pin) {
     delay(10);
   }
 
-  // Sorting
   for (int i = 0; i < 9; i++) {
     for (int j = i + 1; j < 10; j++) {
       if (buffer_arr[i] > buffer_arr[j]) {
@@ -29,7 +27,6 @@ float getFilteredADC(int pin) {
     }
   }
 
-  // Ambil 6 data tengah
   int sum = 0;
   for (int i = 2; i < 8; i++) {
     sum += buffer_arr[i];
@@ -45,7 +42,6 @@ void setup() {
   Serial.begin(115200);
   Serial.println("Kalibrasi TDS - Median + Average");
   Serial.println("Data tiap detik, rata-rata 1 menit");
-  Serial.println("--------------------------------");
 }
 
 void loop() {
@@ -61,7 +57,6 @@ void loop() {
     voltSum += voltage;
     count++;
 
-    // === TAMPILAN TIAP DETIK ===
     Serial.print("Detik ");
     Serial.print(count);
     Serial.print(" -> ADC: ");
@@ -71,20 +66,15 @@ void loop() {
     Serial.println(" V");
   }
 
-  // === RATA-RATA 1 MENIT ===
   if (count >= 60) {
     float avgADC = adcSum / 60.0;
     float avgVolt = voltSum / 60.0;
 
-    Serial.println("--------------------------------");
     Serial.print("RATA-RATA 1 MENIT -> ADC: ");
     Serial.print(avgADC, 2);
     Serial.print(" | Tegangan: ");
     Serial.print(avgVolt, 3);
     Serial.println(" V");
-    Serial.println("--------------------------------");
-
-    // Reset
     count = 0;
     adcSum = 0;
     voltSum = 0;

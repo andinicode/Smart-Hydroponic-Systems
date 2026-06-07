@@ -6,32 +6,27 @@
 #include <BlynkSimpleEsp32.h>
 #include "time.h"
 
-// PIN
 #define RELAY1_PIN    22
 #define RELAY2_PIN    23
 #define TDS_PIN       34
 #define FLOW1_PIN     32
 #define FLOW2_PIN     33
 
-// WIFI 
 char ssid[] = "mariberkoneksi";
 char pass[] = "HITUNG AJA";
 
-//  BLYNK VIRTUAL PINS 
 #define VPIN_TDS        V0
 #define VPIN_FLOW1      V3
 #define VPIN_FLOW2      V4
 #define VPIN_TARGET_TDS V6
 #define VPIN_STATUS     V7
-
-//  FLOW SENSOR 
+ 
 const float FLOW_CALIBRATION = 3.4;
 volatile unsigned long flow1Count = 0;
 volatile unsigned long flow2Count = 0;
 float totalFlowML1 = 0;
 float totalFlowML2 = 0;
 
-// TDS
 float tdsRaw = 0;
 int tdsInt = 0;
 int targetTDS = 560;
@@ -43,20 +38,16 @@ int tdsDisplayCount = 0;
 int maxTDSDisplay = 7;
 bool selesai = false;
 
-// STATE
 bool relayActive = false;
 bool pumpRequest = false;
 
-//  NTP 
 const char* ntpServer = "pool.ntp.org";
 const long gmtOffset_sec = 7 * 3600;
 const int daylightOffset_sec = 0;
 
-// INTERRUPT 
 void IRAM_ATTR onFlow1Pulse() { flow1Count++; }
 void IRAM_ATTR onFlow2Pulse() { flow2Count++; }
 
-// SETUP 
 void setup() {
   Serial.begin(115200);
   delay(1000);
@@ -90,7 +81,6 @@ void setup() {
   Serial.println("SISTEM SIAP ");
 }
 
-//LOOP 
 void loop() {
   Blynk.run();
   unsigned long nowMillis = millis();
@@ -102,17 +92,14 @@ void loop() {
 
   updateAndSendStatus();
 
-  // ===== Baca TDS tiap detik (real-time) =====
   if(nowMillis - lastTDSMillis >= 1000 && !selesai){
     lastTDSMillis = nowMillis;
     readTDS();
   }
 
-  // ===== Kontrol pompa sesuai TDS =====
   controlRelay();
 }
 
-// ===== BACA TDS =====
 void readTDS() {
   long adcSum = 0;
   for(int i=0;i<10;i++){
@@ -120,11 +107,9 @@ void readTDS() {
     delay(5);
   }
 
-  // POLINOMIAL ORDE 2
   tdsRaw = 0.0001 * adcSum * adcSum + 0.1863 * adcSum - 1e-12;
   tdsInt = (int)(tdsRaw + 0.5);
 
-  // Tampilkan TDS 7x per menit (menit1 = 8x)
   int intervalDisplay = (lastBlock == 0) ? 8 : 7;
   if(tdsDisplayCount < intervalDisplay){
     tdsDisplayCount++;
@@ -140,7 +125,6 @@ void readTDS() {
   if(tdsInt < targetTDS) pumpRequest = true;
 }
 
-// FLOW 
 void readAndSendFlow() {
   noInterrupts();
   unsigned long c1 = flow1Count;
@@ -161,7 +145,7 @@ void updateAndSendStatus() {
   time_t now = time(nullptr);
   struct tm *t = localtime(&now);
 
-  int block = (t->tm_min % 4); // Menit 1-4 → 0..3
+  int block = (t->tm_min % 4); 
   int newTarget[] = {560,660,760,840};
   String newStatus[] = {"Menit 1","Menit 2","Menit 3","Menit 4"};
 
@@ -169,11 +153,9 @@ void updateAndSendStatus() {
     targetTDS = newTarget[block];
     statusWaktu = newStatus[block];
 
-    // Reset TDS display count tiap menit
     tdsDisplayCount = 0;
     selesai = false;
 
-    // Reset flow menit 1
     if(block == 0){
       totalFlowML1 = totalFlowML2 = 0;
       Blynk.virtualWrite(VPIN_FLOW1,0);
